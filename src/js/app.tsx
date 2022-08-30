@@ -21,6 +21,8 @@ const Marker = ({
   lng: number
   size: number
   colour: string
+  type: "center" | "poi"
+  desc?: string
 }) => (
   <div>
     <svg
@@ -50,7 +52,7 @@ const Marker = ({
 
 interface Data {
   center: google.maps.LatLngLiteral | null
-  poi: Array<google.maps.LatLngLiteral & {desc: string; selected?: boolean}>
+  poi: Array<google.maps.LatLngLiteral & {desc: string}>
 }
 
 export default function App() {
@@ -59,6 +61,7 @@ export default function App() {
     defaults.center,
   )
   const [mode, setMode] = useState<"center" | "poi">("center")
+  const [poiText, setPoiText] = useState("")
   const [data, setData] = useState<Data>({center: null, poi: []})
 
   const onChange = (value: ChangeEventValue) => {
@@ -78,15 +81,19 @@ export default function App() {
         onClick={(value: ClickEventValue) => {
           if (mode === "center") {
             setData({...data, center: {lat: value.lat, lng: value.lng}})
-          } else {
+          } else if (mode === "poi" && poiText.length) {
             setData({
               ...data,
               poi: [
                 ...data.poi,
-                {lat: value.lat, lng: value.lng, desc: "fhfjkl"},
+                {lat: value.lat, lng: value.lng, desc: poiText},
               ],
             })
+            setPoiText("")
           }
+        }}
+        onChildClick={(a, b) => {
+          console.log("a, b", a, b)
         }}
       >
         {data.center && (
@@ -95,10 +102,19 @@ export default function App() {
             lng={data.center.lng}
             size={48}
             colour="red"
+            type="center"
           />
         )}
         {data.poi.map((poi) => (
-          <Marker lat={poi.lat} lng={poi.lng} size={36} colour="green" />
+          <Marker
+            key={poi.desc}
+            lat={poi.lat}
+            lng={poi.lng}
+            size={36}
+            colour="green"
+            desc={poi.desc}
+            type="poi"
+          />
         ))}
       </GoogleMapReact>
       <input
@@ -119,6 +135,11 @@ export default function App() {
         checked={mode === "poi"}
       />
       <label htmlFor="poi">Set POI</label>
+      <input
+        value={poiText}
+        onChange={(e) => setPoiText(e.target.value)}
+        disabled={mode === "center"}
+      />
     </div>
   )
 }
