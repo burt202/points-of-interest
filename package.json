@@ -10,6 +10,7 @@
     "prepush": "npm run build; npm run deploy"
   },
   "devDependencies": {
+    "@types/google-map-react": "^2.1.7",
     "@types/node": "^14.17.33",
     "@types/react": "^17.0.37",
     "@types/react-dom": "^17.0.11",
@@ -37,6 +38,7 @@
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
+    "google-map-react": "^2.2.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   }

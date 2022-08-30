@@ -1,4 +1,4 @@
-import * as HtmlWebpackPlugin from "html-webpack-plugin"
+import HtmlWebpackPlugin from "html-webpack-plugin"
 import {merge} from "webpack-merge"
 
 import common from "./config.common"
@@ -10,10 +10,7 @@ export default merge(common, {
     rules: [
       {
         test: /\.css$/,
-        use: [
-          {loader: "style-loader"},
-          {loader: "css-loader"},
-        ],
+        use: [{loader: "style-loader"}, {loader: "css-loader"}],
       },
     ],
   },

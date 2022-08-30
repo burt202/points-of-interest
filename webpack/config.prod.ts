@@ -1,6 +1,6 @@
-import * as CssMinimizerPlugin from "css-minimizer-webpack-plugin"
-import * as HtmlWebpackPlugin from "html-webpack-plugin"
-import * as MiniCssExtractPlugin from "mini-css-extract-plugin"
+import CssMinimizerPlugin from "css-minimizer-webpack-plugin"
+import HtmlWebpackPlugin from "html-webpack-plugin"
+import MiniCssExtractPlugin from "mini-css-extract-plugin"
 import * as webpack from "webpack"
 import {merge} from "webpack-merge"
 
@@ -15,10 +15,7 @@ export default merge(common, {
     rules: [
       {
         test: /\.css$/,
-        use: [
-          {loader: MiniCssExtractPlugin.loader},
-          {loader: "css-loader"},
-        ],
+        use: [{loader: MiniCssExtractPlugin.loader}, {loader: "css-loader"}],
       },
     ],
   },
