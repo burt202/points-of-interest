@@ -1,19 +1,20 @@
 import * as React from "react"
 import {useState, useRef} from "react"
 
+import Header from "./header"
 import List from "./list"
 import Map from "./map"
 import {Data} from "./types"
 
 const defaults = {
-  name: "Amsterdam", // TODO
+  title: "",
   zoom: 3,
   center: {
     lat: 0,
     lng: 0,
   },
   poi: [],
-}
+} as Data
 
 export default function App() {
   const zoom = useRef(defaults.zoom)
@@ -28,6 +29,13 @@ export default function App() {
   return (
     <div>
       <div style={{padding: 16}}>
+        <Header
+          title={data.title}
+          onTitleChange={(title) => {
+            console.log("title", title)
+            setData({...data, title})
+          }}
+        />
         {hasSetCenterAndZoom && (
           <List
             poi={data.poi}
@@ -53,6 +61,11 @@ export default function App() {
               textDecoration: "underline",
             }}
             onClick={() => {
+              if (data.title.length === 0) {
+                alert("You must set a title")
+                return
+              }
+
               const dataStr =
                 "data:text/json;charset=utf-8," +
                 encodeURIComponent(JSON.stringify(data, null, 2))
@@ -62,7 +75,7 @@ export default function App() {
               ) as HTMLElement
 
               downloadLink.setAttribute("href", dataStr)
-              downloadLink.setAttribute("download", `${defaults.name}.json`)
+              downloadLink.setAttribute("download", `${data.title}.json`)
               downloadLink.click()
               downloadLink.setAttribute("href", "")
             }}

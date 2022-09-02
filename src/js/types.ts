@@ -4,6 +4,7 @@ export interface PointOfInterest {
 }
 
 export interface Data {
+  title: string
   center: {lat: number; lng: number}
   zoom: number
   poi: Array<PointOfInterest>
