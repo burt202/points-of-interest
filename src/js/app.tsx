@@ -1,7 +1,7 @@
-import R from "ramda"
 import * as React from "react"
 import {useState, useRef} from "react"
 
+import List from "./list"
 import Map from "./map"
 
 const defaults = {
@@ -39,10 +39,12 @@ const mockData = {
     },
   ],
 } as Data
+const name = "Amsterdam"
 
 export default function App() {
   const zoom = useRef(mockData.zoom)
   const center = useRef<google.maps.LatLngLiteral>(mockData.center)
+
   const [data, setData] = useState<Data>(mockData)
   const [selectedPoi, setSelectedPoi] = useState<string | null>(null)
 
@@ -51,43 +53,12 @@ export default function App() {
   return (
     <div>
       <div style={{padding: 16}}>
-        {data.poi.map((p, i) => {
-          const isSelected = selectedPoi === p.text
-
-          return (
-            <div
-              style={{display: "flex", alignItems: "center", marginBottom: 8}}
-            >
-              <p
-                key={i}
-                style={{
-                  background: isSelected ? "#fdfd96" : "#ccc",
-                  padding: 8,
-                  margin: 0,
-                  cursor: "pointer",
-                  flexGrow: 1,
-                }}
-                onClick={() => {
-                  if (isSelected) {
-                    setSelectedPoi(null)
-                  } else {
-                    setSelectedPoi(p.text)
-                  }
-                }}
-              >
-                {p.text}
-              </p>
-              <img
-                src="delete.svg"
-                style={{height: 24, cursor: "pointer", marginLeft: 4}}
-                onClick={() => {
-                  const updated = R.remove(i, 1, data.poi)
-                  setData({...data, poi: updated})
-                }}
-              />
-            </div>
-          )
-        })}
+        <List
+          poi={data.poi}
+          selectedPoi={selectedPoi}
+          onItemSelect={(text) => setSelectedPoi(text)}
+          onPoiChange={(poi) => setData({...data, poi})}
+        />
         <button
           onClick={() =>
             setData({...data, center: center.current, zoom: zoom.current})
@@ -95,9 +66,31 @@ export default function App() {
         >
           Use current center and zoom
         </button>
-        <pre style={{background: "#eee", padding: 8}}>
-          {JSON.stringify(data, null, 2)}
-        </pre>
+        <p>
+          <a id="hidden-download-link" style={{display: "none"}}></a>
+          <a
+            style={{
+              color: "#336699",
+              cursor: "pointer",
+              textDecoration: "underline",
+            }}
+            onClick={() => {
+              const dataStr =
+                "data:text/json;charset=utf-8," +
+                encodeURIComponent(JSON.stringify(data, null, 2))
+
+              const downloadLink = document.getElementById(
+                "hidden-download-link",
+              ) as HTMLElement
+              downloadLink.setAttribute("href", dataStr)
+              downloadLink.setAttribute("download", `${name}.json`)
+              downloadLink.click()
+              downloadLink.setAttribute("href", "")
+            }}
+          >
+            Export
+          </a>
+        </p>
       </div>
       <Map
         center={data.center}
