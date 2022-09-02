@@ -25,7 +25,10 @@ const config: webpack.Configuration = {
   },
   plugins: [
     new CopyWebpackPlugin({
-      patterns: [{from: "src/favicon.ico", to: "favicon.ico"}],
+      patterns: [
+        {from: "src/delete.svg", to: "delete.svg"},
+        {from: "src/favicon.ico", to: "favicon.ico"},
+      ],
     }),
     new webpack.DefinePlugin({
       VERSION: JSON.stringify(packageJson.version),

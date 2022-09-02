@@ -1,9 +1,8 @@
-import GoogleMapReact, {
-  ChangeEventValue,
-  ClickEventValue,
-} from "google-map-react"
+import R from "ramda"
 import * as React from "react"
-import {useState} from "react"
+import {useState, useRef} from "react"
+
+import Map from "./map"
 
 const defaults = {
   zoom: 3,
@@ -13,132 +12,114 @@ const defaults = {
   },
 }
 
-const Marker = ({
-  size,
-  colour,
-}: {
-  lat: number
-  lng: number
-  size: number
-  colour: string
-  type: "center" | "poi"
-  desc?: string
-}) => (
-  <div>
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      stroke={colour}
-      viewBox="0 0 24 24"
-      style={{height: size, width: size}}
-    >
-      <path
-        xmlns="http://www.w3.org/2000/svg"
-        stroke={colour}
-        strokeLinejoin="round"
-        strokeWidth="2"
-        d="M13 9a1 1 0 11-2 0 1 1 0 012 0z"
-      />
-      <path
-        xmlns="http://www.w3.org/2000/svg"
-        stroke={colour}
-        strokeLinejoin="round"
-        strokeWidth="2"
-        d="M17.5 9.5c0 3.038-2 6.5-5.5 10.5-3.5-4-5.5-7.462-5.5-10.5a5.5 5.5 0 1111 0z"
-      />
-    </svg>
-  </div>
-)
+console.log("defaults", defaults)
 
-interface Data {
-  center: google.maps.LatLngLiteral | null
-  poi: Array<google.maps.LatLngLiteral & {desc: string}>
+interface PointOfInterest {
+  position: google.maps.LatLngLiteral
+  text: string
 }
 
-export default function App() {
-  const [zoom, setZoom] = useState(defaults.zoom)
-  const [center, setCenter] = useState<google.maps.LatLngLiteral>(
-    defaults.center,
-  )
-  const [mode, setMode] = useState<"center" | "poi">("center")
-  const [poiText, setPoiText] = useState("")
-  const [data, setData] = useState<Data>({center: null, poi: []})
+interface Data {
+  center: {lat: number; lng: number}
+  zoom: number
+  poi: Array<PointOfInterest>
+}
 
-  const onChange = (value: ChangeEventValue) => {
-    setZoom(value.zoom)
-    setCenter(value.center)
-  }
+const mockData = {
+  center: {lat: 52.36902658005985, lng: 4.891099607632397},
+  zoom: 13,
+  poi: [
+    {
+      position: {lat: 52.37547263668976, lng: 4.884749230451855},
+      text: "Anne Frank House",
+    },
+    {
+      position: {lat: 52.366768692771856, lng: 4.926359825639675},
+      text: "IJ Brewery",
+    },
+  ],
+} as Data
+
+export default function App() {
+  const zoom = useRef(mockData.zoom)
+  const center = useRef<google.maps.LatLngLiteral>(mockData.center)
+  const [data, setData] = useState<Data>(mockData)
+  const [selectedPoi, setSelectedPoi] = useState<string | null>(null)
+
+  const element = document.body.querySelector("#map") as HTMLElement
 
   return (
-    <div style={{width: "100%", height: "60vh"}}>
-      <GoogleMapReact
-        bootstrapURLKeys={{key: "AIzaSyBe9ZEtNhRArJDvoWXtR1EbKViaICpQkQs"}}
-        defaultCenter={defaults.center}
-        defaultZoom={defaults.zoom}
-        center={center}
-        zoom={zoom}
-        onChange={onChange}
-        onClick={(value: ClickEventValue) => {
-          if (mode === "center") {
-            setData({...data, center: {lat: value.lat, lng: value.lng}})
-          } else if (mode === "poi" && poiText.length) {
-            setData({
-              ...data,
-              poi: [
-                ...data.poi,
-                {lat: value.lat, lng: value.lng, desc: poiText},
-              ],
-            })
-            setPoiText("")
+    <div>
+      <div style={{padding: 16}}>
+        {data.poi.map((p, i) => {
+          const isSelected = selectedPoi === p.text
+
+          return (
+            <div
+              style={{display: "flex", alignItems: "center", marginBottom: 8}}
+            >
+              <p
+                key={i}
+                style={{
+                  background: isSelected ? "#fdfd96" : "#ccc",
+                  padding: 8,
+                  margin: 0,
+                  cursor: "pointer",
+                  flexGrow: 1,
+                }}
+                onClick={() => {
+                  if (isSelected) {
+                    setSelectedPoi(null)
+                  } else {
+                    setSelectedPoi(p.text)
+                  }
+                }}
+              >
+                {p.text}
+              </p>
+              <img
+                src="delete.svg"
+                style={{height: 24, cursor: "pointer", marginLeft: 4}}
+                onClick={() => {
+                  const updated = R.remove(i, 1, data.poi)
+                  setData({...data, poi: updated})
+                }}
+              />
+            </div>
+          )
+        })}
+        <button
+          onClick={() =>
+            setData({...data, center: center.current, zoom: zoom.current})
           }
+        >
+          Use current center and zoom
+        </button>
+        <pre style={{background: "#eee", padding: 8}}>
+          {JSON.stringify(data, null, 2)}
+        </pre>
+      </div>
+      <Map
+        center={data.center}
+        zoom={data.zoom}
+        element={element}
+        markers={data.poi.map((p) => {
+          return {...p, selected: selectedPoi === p.text}
+        })}
+        onClick={(position) => {
+          setData({
+            ...data,
+            poi: [
+              ...data.poi,
+              {position, text: `${position.lat}, ${position.lng}`},
+            ],
+          })
+          setSelectedPoi(null)
         }}
-        onChildClick={(a, b) => {
-          console.log("a, b", a, b)
+        onChange={(c, z) => {
+          center.current = c
+          zoom.current = z
         }}
-      >
-        {data.center && (
-          <Marker
-            lat={data.center.lat}
-            lng={data.center.lng}
-            size={48}
-            colour="red"
-            type="center"
-          />
-        )}
-        {data.poi.map((poi) => (
-          <Marker
-            key={poi.desc}
-            lat={poi.lat}
-            lng={poi.lng}
-            size={36}
-            colour="green"
-            desc={poi.desc}
-            type="poi"
-          />
-        ))}
-      </GoogleMapReact>
-      <input
-        type="radio"
-        id="center"
-        name="mode"
-        value="center"
-        onChange={() => setMode("center")}
-        checked={mode === "center"}
-      />
-      <label htmlFor="center">Set center</label>
-      <input
-        type="radio"
-        id="poi"
-        name="mode"
-        value="poi"
-        onChange={() => setMode("poi")}
-        checked={mode === "poi"}
-      />
-      <label htmlFor="poi">Set POI</label>
-      <input
-        value={poiText}
-        onChange={(e) => setPoiText(e.target.value)}
-        disabled={mode === "center"}
       />
     </div>
   )
