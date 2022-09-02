@@ -3,49 +3,24 @@ import {useState, useRef} from "react"
 
 import List from "./list"
 import Map from "./map"
+import {Data} from "./types"
 
 const defaults = {
+  name: "Amsterdam", // TODO
   zoom: 3,
   center: {
     lat: 0,
     lng: 0,
   },
+  poi: [],
 }
-
-console.log("defaults", defaults)
-
-interface PointOfInterest {
-  position: google.maps.LatLngLiteral
-  text: string
-}
-
-interface Data {
-  center: {lat: number; lng: number}
-  zoom: number
-  poi: Array<PointOfInterest>
-}
-
-const mockData = {
-  center: {lat: 52.36902658005985, lng: 4.891099607632397},
-  zoom: 13,
-  poi: [
-    {
-      position: {lat: 52.37547263668976, lng: 4.884749230451855},
-      text: "Anne Frank House",
-    },
-    {
-      position: {lat: 52.366768692771856, lng: 4.926359825639675},
-      text: "IJ Brewery",
-    },
-  ],
-} as Data
-const name = "Amsterdam"
 
 export default function App() {
-  const zoom = useRef(mockData.zoom)
-  const center = useRef<google.maps.LatLngLiteral>(mockData.center)
+  const zoom = useRef(defaults.zoom)
+  const center = useRef<google.maps.LatLngLiteral>(defaults.center)
 
-  const [data, setData] = useState<Data>(mockData)
+  const [hasSetCenterAndZoom, setHasSetCenterAndZoom] = useState(false)
+  const [data, setData] = useState<Data>(defaults)
   const [selectedPoi, setSelectedPoi] = useState<string | null>(null)
 
   const element = document.body.querySelector("#map") as HTMLElement
@@ -53,16 +28,19 @@ export default function App() {
   return (
     <div>
       <div style={{padding: 16}}>
-        <List
-          poi={data.poi}
-          selectedPoi={selectedPoi}
-          onItemSelect={(text) => setSelectedPoi(text)}
-          onPoiChange={(poi) => setData({...data, poi})}
-        />
+        {hasSetCenterAndZoom && (
+          <List
+            poi={data.poi}
+            selectedPoi={selectedPoi}
+            onItemSelect={(text) => setSelectedPoi(text)}
+            onPoiChange={(poi) => setData({...data, poi})}
+          />
+        )}
         <button
-          onClick={() =>
+          onClick={() => {
             setData({...data, center: center.current, zoom: zoom.current})
-          }
+            setHasSetCenterAndZoom(true)
+          }}
         >
           Use current center and zoom
         </button>
@@ -82,8 +60,9 @@ export default function App() {
               const downloadLink = document.getElementById(
                 "hidden-download-link",
               ) as HTMLElement
+
               downloadLink.setAttribute("href", dataStr)
-              downloadLink.setAttribute("download", `${name}.json`)
+              downloadLink.setAttribute("download", `${defaults.name}.json`)
               downloadLink.click()
               downloadLink.setAttribute("href", "")
             }}
@@ -100,6 +79,8 @@ export default function App() {
           return {...p, selected: selectedPoi === p.text}
         })}
         onClick={(position) => {
+          if (!hasSetCenterAndZoom) return
+
           setData({
             ...data,
             poi: [
