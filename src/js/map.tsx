@@ -52,6 +52,8 @@ export default function Map({
               ]
             : null,
           disableDefaultUI: disable,
+          scrollwheel: !disable,
+          disableDoubleClickZoom: disable,
         })
 
         const _markers = [] as Array<google.maps.Marker>
