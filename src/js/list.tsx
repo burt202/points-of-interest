@@ -57,7 +57,7 @@ export default function List({
                         }}
                       />
                       <img
-                        src="tick.svg"
+                        src="save.svg"
                         style={{height: 24, cursor: "pointer", marginLeft: 4}}
                         onClick={() => {
                           const updated = R.update(
@@ -112,17 +112,17 @@ export default function List({
               )
             })
           )}
-          <div>
+          <div style={{display: "flex", alignItems: "center"}}>
             <input
               placeholder="Add manually (lat, lng)"
-              style={{padding: 4, height: 32}}
+              style={{padding: 4, height: 32, flexGrow: 1}}
               value={newPoiText}
               onChange={(e) => {
                 setNewPoiText(e.target.value)
               }}
             />
             <img
-              src="tick.svg"
+              src="save.svg"
               style={{height: 24, cursor: "pointer", marginLeft: 4}}
               onClick={() => {
                 onPoiChange([

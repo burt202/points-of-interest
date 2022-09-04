@@ -29,6 +29,7 @@ const config: webpack.Configuration = {
         {from: "src/icons/cross.svg", to: "cross.svg"},
         {from: "src/icons/delete.svg", to: "delete.svg"},
         {from: "src/icons/edit.svg", to: "edit.svg"},
+        {from: "src/icons/save.svg", to: "save.svg"},
         {from: "src/icons/tick.svg", to: "tick.svg"},
         {from: "src/favicon.ico", to: "favicon.ico"},
       ],

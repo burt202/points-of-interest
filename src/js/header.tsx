@@ -22,7 +22,7 @@ export default function Header({title, onTitleChange}: HeaderProps) {
             onChange={(e) => setTitleText(e.target.value)}
           />
           <img
-            src="tick.svg"
+            src="save.svg"
             style={{height: 24, cursor: "pointer", marginLeft: 4}}
             onClick={() => {
               if (titleText.length > 0) {

@@ -6,7 +6,7 @@ import {defaults} from "./constants"
 import {Data} from "./types"
 
 interface ImportProps {
-  onDataSet: (data: Data) => void
+  onDataSet: (type: "import" | "new", data: Data) => void
 }
 
 const isValidJSON = (str: string) => {
@@ -81,13 +81,13 @@ export default function Import({onDataSet}: ImportProps) {
       return
     }
 
-    onDataSet(toValidate)
+    onDataSet("import", toValidate)
   }
 
   return (
     <div style={{padding: 16}}>
       <h1 style={{marginTop: 0}}>Points of interest</h1>
-      <button onClick={() => onDataSet(defaults)}>Create new</button>
+      <button onClick={() => onDataSet("new", defaults)}>Create new</button>
       <p>OR</p>
       <div style={{display: "flex", flexDirection: "column"}}>
         <label htmlFor="file" id="file">

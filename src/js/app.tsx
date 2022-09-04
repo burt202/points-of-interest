@@ -21,7 +21,15 @@ export default function App() {
   return (
     <div>
       {data === null ? (
-        <Import onDataSet={(data) => setData(data)} />
+        <Import
+          onDataSet={(type, data) => {
+            setData(data)
+
+            if (type === "import") {
+              setHasSetCenterAndZoom(true)
+            }
+          }}
+        />
       ) : (
         <div style={{padding: 16}}>
           <Interface
