@@ -1,8 +1,7 @@
 import * as React from "react"
 import {useState, useRef} from "react"
 
-import Header from "./header"
-import List from "./list"
+import Interface from "./interface"
 import Map from "./map"
 import {Data} from "./types"
 
@@ -28,62 +27,18 @@ export default function App() {
 
   return (
     <div>
-      <div style={{padding: 16}}>
-        <Header
-          title={data.title}
-          onTitleChange={(title) => {
-            console.log("title", title)
-            setData({...data, title})
-          }}
-        />
-        {hasSetCenterAndZoom && (
-          <List
-            poi={data.poi}
-            selectedPoi={selectedPoi}
-            onItemSelect={(text) => setSelectedPoi(text)}
-            onPoiChange={(poi) => setData({...data, poi})}
-          />
-        )}
-        <button
-          onClick={() => {
-            setData({...data, center: center.current, zoom: zoom.current})
-            setHasSetCenterAndZoom(true)
-          }}
-        >
-          Use current center and zoom
-        </button>
-        <p>
-          <a id="hidden-download-link" style={{display: "none"}}></a>
-          <a
-            style={{
-              color: "#336699",
-              cursor: "pointer",
-              textDecoration: "underline",
-            }}
-            onClick={() => {
-              if (data.title.length === 0) {
-                alert("You must set a title")
-                return
-              }
-
-              const dataStr =
-                "data:text/json;charset=utf-8," +
-                encodeURIComponent(JSON.stringify(data, null, 2))
-
-              const downloadLink = document.getElementById(
-                "hidden-download-link",
-              ) as HTMLElement
-
-              downloadLink.setAttribute("href", dataStr)
-              downloadLink.setAttribute("download", `${data.title}.json`)
-              downloadLink.click()
-              downloadLink.setAttribute("href", "")
-            }}
-          >
-            Export
-          </a>
-        </p>
-      </div>
+      <Interface
+        data={data}
+        onDataChange={(data) => {
+          setData(data)
+        }}
+        selectedPoi={selectedPoi}
+        onSelectedPoiChange={(text) => setSelectedPoi(text)}
+        onUseCenterAndZoomClick={() => {
+          setData({...data, center: center.current, zoom: zoom.current})
+          setHasSetCenterAndZoom(true)
+        }}
+      />
       <Map
         center={data.center}
         zoom={data.zoom}

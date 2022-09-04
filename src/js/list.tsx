@@ -7,7 +7,7 @@ import {PointOfInterest} from "./types"
 interface ListProps {
   poi: Array<PointOfInterest>
   selectedPoi: string | null
-  onItemSelect: (poi: string | null) => void
+  onItemSelect: (poi: string) => void
   onPoiChange: (poi: Array<PointOfInterest>) => void
 }
 
@@ -71,11 +71,7 @@ export default function List({
                       flexGrow: 1,
                     }}
                     onClick={() => {
-                      if (isSelected) {
-                        onItemSelect(null)
-                      } else {
-                        onItemSelect(p.text)
-                      }
+                      onItemSelect(p.text)
                     }}
                   >
                     {p.text}
