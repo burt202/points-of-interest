@@ -1,5 +1,5 @@
 import * as React from "react"
-import {useState, useRef} from "react"
+import {useState, useRef, useCallback} from "react"
 
 import {defaults} from "./constants"
 import Import from "./import"
@@ -15,6 +15,9 @@ export default function App() {
   const [data, setData] = useState<Data | null>(null)
   const [selectedPoi, setSelectedPoi] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+
+  const [, updateState] = useState<number | null>()
+  const forceUpdate = useCallback(() => updateState(Date.now()), [])
 
   const element = document.body.querySelector("#map") as HTMLElement
 
@@ -44,6 +47,9 @@ export default function App() {
               setData({...data, center: center.current, zoom: zoom.current})
               setError(null)
               setHasSetCenterAndZoom(true)
+            }}
+            onRecenterClick={() => {
+              forceUpdate()
             }}
             hasSetCenterAndZoom={hasSetCenterAndZoom}
           />

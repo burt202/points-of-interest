@@ -10,6 +10,7 @@ interface InterfaceProps {
   selectedPoi: string | null
   onSelectedPoiChange: (poi: string | null) => void
   onUseCenterAndZoomClick: () => void
+  onRecenterClick: () => void
   hasSetCenterAndZoom: boolean
 }
 
@@ -19,6 +20,7 @@ export default function Interface({
   selectedPoi,
   onSelectedPoiChange,
   onUseCenterAndZoomClick,
+  onRecenterClick,
   hasSetCenterAndZoom,
 }: InterfaceProps) {
   return (
@@ -44,14 +46,25 @@ export default function Interface({
             <img src="cross.svg" style={{height: 24, marginLeft: 4}} />
           )}
         </div>
-        <button
-          style={{height: 24}}
-          onClick={() => {
-            onUseCenterAndZoomClick()
-          }}
-        >
-          Use current
-        </button>
+        <div>
+          <button
+            style={{height: 24}}
+            onClick={() => {
+              onUseCenterAndZoomClick()
+            }}
+          >
+            Use current
+          </button>
+          <button
+            style={{height: 24, marginLeft: 4}}
+            onClick={() => {
+              onRecenterClick()
+            }}
+            disabled={!hasSetCenterAndZoom}
+          >
+            Re center
+          </button>
+        </div>
       </div>
       <List
         poi={data.poi}
