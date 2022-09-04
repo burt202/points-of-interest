@@ -40,6 +40,7 @@
   },
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.14.3",
+    "ajv": "^8.11.0",
     "ramda": "^0.28.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
