@@ -17,7 +17,7 @@ export default function Header({title, onTitleChange}: HeaderProps) {
           <input
             value={titleText}
             style={{flexGrow: 1, padding: 4, height: 48, fontSize: 25}}
-            placeholder="Add a title"
+            placeholder="Where are you going? etc"
             autoFocus
             onChange={(e) => setTitleText(e.target.value)}
           />
@@ -45,7 +45,7 @@ export default function Header({title, onTitleChange}: HeaderProps) {
               setIsBeingEdited(!isBeingEdited)
             }}
           >
-            {titleText || "No title"}
+            {titleText || "Click to add a title"}
           </h1>
           <img
             src="edit.svg"
