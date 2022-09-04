@@ -85,6 +85,7 @@ export default function List({
                     style={{height: 24, cursor: "pointer", marginLeft: 4}}
                     onClick={() => {
                       setEditedPoi(p.text)
+                      setEditedPoiText(p.text)
                     }}
                   />
                 </>

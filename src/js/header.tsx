@@ -8,23 +8,54 @@ interface HeaderProps {
 
 export default function Header({title, onTitleChange}: HeaderProps) {
   const [titleText, setTitleText] = useState(title)
+  const [isBeingEdited, setIsBeingEdited] = useState(false)
 
   return (
-    <div style={{display: "flex", marginBottom: 16}}>
-      <input
-        value={titleText}
-        style={{flexGrow: 1, padding: 4, height: 48, fontSize: 25}}
-        placeholder="Add a title"
-        onChange={(e) => setTitleText(e.target.value)}
-      />
-      <button
-        style={{marginLeft: 4}}
-        onClick={() => {
-          onTitleChange(titleText)
-        }}
-      >
-        Update
-      </button>
+    <div style={{display: "flex", alignItems: "center", marginBottom: 16}}>
+      {isBeingEdited ? (
+        <>
+          <input
+            value={titleText}
+            style={{flexGrow: 1, padding: 4, height: 48, fontSize: 25}}
+            placeholder="Add a title"
+            autoFocus
+            onChange={(e) => setTitleText(e.target.value)}
+          />
+          <img
+            src="tick.svg"
+            style={{height: 24, cursor: "pointer", marginLeft: 4}}
+            onClick={() => {
+              if (titleText.length > 0) {
+                onTitleChange(titleText)
+              }
+              setIsBeingEdited(false)
+            }}
+          />
+        </>
+      ) : (
+        <>
+          <h1
+            style={{
+              padding: 8,
+              margin: 0,
+              cursor: "pointer",
+              flexGrow: 1,
+            }}
+            onClick={() => {
+              setIsBeingEdited(!isBeingEdited)
+            }}
+          >
+            {titleText || "No title"}
+          </h1>
+          <img
+            src="edit.svg"
+            style={{height: 24, cursor: "pointer", marginLeft: 4}}
+            onClick={() => {
+              setIsBeingEdited(!isBeingEdited)
+            }}
+          />
+        </>
+      )}
     </div>
   )
 }
