@@ -55,6 +55,9 @@ export default function List({
                         onChange={(e) => {
                           setEditedPoiText(e.target.value)
                         }}
+                        onFocus={(e) => {
+                          e.target.select()
+                        }}
                       />
                       <img
                         src="save.svg"

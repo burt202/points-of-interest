@@ -20,6 +20,9 @@ export default function Header({title, onTitleChange}: HeaderProps) {
             placeholder="Where are you going? etc"
             autoFocus
             onChange={(e) => setTitleText(e.target.value)}
+            onFocus={(e) => {
+              e.target.select()
+            }}
           />
           <img
             src="save.svg"
