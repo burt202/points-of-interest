@@ -11,7 +11,7 @@ export default function Header({title, onTitleChange}: HeaderProps) {
   const [isBeingEdited, setIsBeingEdited] = useState(false)
 
   return (
-    <div style={{display: "flex", alignItems: "center", marginBottom: 16}}>
+    <div style={{display: "flex", alignItems: "center"}}>
       {isBeingEdited ? (
         <>
           <input
@@ -36,7 +36,7 @@ export default function Header({title, onTitleChange}: HeaderProps) {
         <>
           <h1
             style={{
-              padding: 8,
+              padding: "8px 0px",
               margin: 0,
               cursor: "pointer",
               flexGrow: 1,

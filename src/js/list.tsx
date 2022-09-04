@@ -9,6 +9,7 @@ interface ListProps {
   selectedPoi: string | null
   onItemSelect: (poi: string) => void
   onPoiChange: (poi: Array<PointOfInterest>) => void
+  hasSetCenterAndZoom: boolean
 }
 
 export default function List({
@@ -16,14 +17,20 @@ export default function List({
   selectedPoi,
   onItemSelect,
   onPoiChange,
+  hasSetCenterAndZoom,
 }: ListProps) {
   const [editedPoi, setEditedPoi] = useState<string | null>(null)
   const [editedPoiText, setEditedPoiText] = useState("")
 
   return (
-    <div>
+    <div style={{marginBottom: 64}}>
+      <h3 style={{textDecoration: "underline"}}>Points</h3>
       {poi.length === 0 ? (
-        <p>Click on the map to add a point of interest</p>
+        <p>
+          {hasSetCenterAndZoom
+            ? "Click on the map to add a point of interest"
+            : "Set the center and zoom first"}
+        </p>
       ) : (
         poi.map((p, i) => {
           const isSelected = selectedPoi === p.text

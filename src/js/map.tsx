@@ -15,6 +15,7 @@ interface MapProps {
   }>
   onClick: (position: google.maps.LatLngLiteral) => void
   onChange?: (position: google.maps.LatLngLiteral, zoom: number) => void
+  disable: boolean
 }
 
 export default function Map({
@@ -24,6 +25,7 @@ export default function Map({
   markers,
   onClick,
   onChange,
+  disable,
 }: MapProps) {
   let map = null as google.maps.Map | null
 
@@ -38,6 +40,18 @@ export default function Map({
         map = new google.maps.Map(element, {
           center,
           zoom,
+          styles: disable
+            ? [
+                {
+                  stylers: [
+                    {
+                      saturation: -100,
+                    },
+                  ],
+                },
+              ]
+            : null,
+          disableDefaultUI: disable,
         })
 
         const _markers = [] as Array<google.maps.Marker>

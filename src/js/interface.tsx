@@ -10,6 +10,7 @@ interface InterfaceProps {
   selectedPoi: string | null
   onSelectedPoiChange: (poi: string | null) => void
   onUseCenterAndZoomClick: () => void
+  hasSetCenterAndZoom: boolean
 }
 
 export default function Interface({
@@ -18,15 +19,40 @@ export default function Interface({
   selectedPoi,
   onSelectedPoiChange,
   onUseCenterAndZoomClick,
+  hasSetCenterAndZoom,
 }: InterfaceProps) {
   return (
-    <div style={{padding: 16}}>
+    <div>
       <Header
         title={data.title}
         onTitleChange={(title) => {
           onDataChange({...data, title})
         }}
       />
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <div style={{display: "flex", alignItems: "center"}}>
+          <p>Center/Zoom set</p>
+          {hasSetCenterAndZoom ? (
+            <img src="tick.svg" style={{height: 24, marginLeft: 4}} />
+          ) : (
+            <img src="cross.svg" style={{height: 24, marginLeft: 4}} />
+          )}
+        </div>
+        <button
+          style={{height: 24}}
+          onClick={() => {
+            onUseCenterAndZoomClick()
+          }}
+        >
+          Use current
+        </button>
+      </div>
       <List
         poi={data.poi}
         selectedPoi={selectedPoi}
@@ -38,45 +64,8 @@ export default function Interface({
           }
         }}
         onPoiChange={(poi) => onDataChange({...data, poi})}
+        hasSetCenterAndZoom={hasSetCenterAndZoom}
       />
-      <button
-        onClick={() => {
-          onUseCenterAndZoomClick()
-        }}
-      >
-        Use current center and zoom
-      </button>
-      <p>
-        <a id="hidden-download-link" style={{display: "none"}}></a>
-        <a
-          style={{
-            color: "#336699",
-            cursor: "pointer",
-            textDecoration: "underline",
-          }}
-          onClick={() => {
-            if (data.title.length === 0) {
-              alert("You must set a title")
-              return
-            }
-
-            const dataStr =
-              "data:text/json;charset=utf-8," +
-              encodeURIComponent(JSON.stringify(data, null, 2))
-
-            const downloadLink = document.getElementById(
-              "hidden-download-link",
-            ) as HTMLElement
-
-            downloadLink.setAttribute("href", dataStr)
-            downloadLink.setAttribute("download", `${data.title}.json`)
-            downloadLink.click()
-            downloadLink.setAttribute("href", "")
-          }}
-        >
-          Export
-        </a>
-      </p>
     </div>
   )
 }

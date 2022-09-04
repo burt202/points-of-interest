@@ -26,9 +26,10 @@ const config: webpack.Configuration = {
   plugins: [
     new CopyWebpackPlugin({
       patterns: [
-        {from: "src/delete.svg", to: "delete.svg"},
-        {from: "src/edit.svg", to: "edit.svg"},
-        {from: "src/tick.svg", to: "tick.svg"},
+        {from: "src/icons/cross.svg", to: "cross.svg"},
+        {from: "src/icons/delete.svg", to: "delete.svg"},
+        {from: "src/icons/edit.svg", to: "edit.svg"},
+        {from: "src/icons/tick.svg", to: "tick.svg"},
         {from: "src/favicon.ico", to: "favicon.ico"},
       ],
     }),
